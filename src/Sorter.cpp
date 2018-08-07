@@ -21,13 +21,12 @@ Sorter::~Sorter()
 sf::Image Sorter::sort(char *argv[])
 {
     std::string pathType {argv[3]};
-    std::string funcType {argv[4]};
-    int maxIntervals {std::stoi(argv[5])};
-    bool randomizeIntervals {static_cast<bool>(std::stoi(argv[6]))};
-    int angle {std::stoi(argv[7])};
-    bool toMerge {static_cast<bool>(std::stoi(argv[8]))};
-    bool toReverse {static_cast<bool>(std::stoi(argv[9]))};
-    bool toMirror {static_cast<bool>(std::stoi(argv[10]))};
+    int maxIntervals {std::stoi(argv[4])};
+    bool randomizeIntervals {static_cast<bool>(std::stoi(argv[5]))};
+    int angle {std::stoi(argv[6])};
+    bool toMerge {static_cast<bool>(std::stoi(argv[7]))};
+    bool toReverse {static_cast<bool>(std::stoi(argv[8]))};
+    bool toMirror {static_cast<bool>(std::stoi(argv[9]))};
 
     std::vector<std::vector<Point>> path;
     std::vector<std::vector<Point>> sortedPath;
