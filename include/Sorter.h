@@ -37,7 +37,6 @@ class Sorter
 {
 public:
     Sorter(sf::Image* img);
-    virtual ~Sorter();
     sf::Image sort(char *argv[]);
 
 private:

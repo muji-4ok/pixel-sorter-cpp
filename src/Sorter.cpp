@@ -13,11 +13,6 @@ Sorter::Sorter(sf::Image* img)
     Point::image = img;
 }
 
-Sorter::~Sorter()
-{
-    //dtor
-}
-
 sf::Image Sorter::sort(char *argv[])
 {
     std::string pathType {argv[3]};
@@ -27,6 +22,7 @@ sf::Image Sorter::sort(char *argv[])
     bool toMerge {static_cast<bool>(std::stoi(argv[7]))};
     bool toReverse {static_cast<bool>(std::stoi(argv[8]))};
     bool toMirror {static_cast<bool>(std::stoi(argv[9]))};
+    bool toInterval {static_cast<bool>(std::stoi(argv[10]))};
 
     std::vector<std::vector<Point>> path;
     std::vector<std::vector<Point>> sortedPath;
@@ -43,7 +39,9 @@ sf::Image Sorter::sort(char *argv[])
     if (toMerge)
         mergeIntoOne(&path);
 
-    path = applyIntervals(&path, maxIntervals, randomizeIntervals);
+    if (toInterval)
+        path = applyIntervals(&path, maxIntervals, randomizeIntervals);
+
     sortedPath = path;
 
     for (auto& seq : sortedPath)
