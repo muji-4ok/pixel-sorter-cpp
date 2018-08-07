@@ -18,8 +18,17 @@ Sorter::~Sorter()
     //dtor
 }
 
-sf::Image Sorter::sort(std::string pathType, std::string funcType, int maxIntervals, bool randomizeIntervals, int angle, bool toMerge)
+sf::Image Sorter::sort(char *argv[])
 {
+    std::string pathType {argv[3]};
+    std::string funcType {argv[4]};
+    int maxIntervals {std::stoi(argv[5])};
+    bool randomizeIntervals {static_cast<bool>(std::stoi(argv[6]))};
+    int angle {std::stoi(argv[7])};
+    bool toMerge {static_cast<bool>(std::stoi(argv[8]))};
+    bool toReverse {static_cast<bool>(std::stoi(argv[9]))};
+    bool toMirror {static_cast<bool>(std::stoi(argv[10]))};
+
     std::vector<std::vector<Point>> path;
     std::vector<std::vector<Point>> sortedPath;
 
@@ -40,6 +49,12 @@ sf::Image Sorter::sort(std::string pathType, std::string funcType, int maxInterv
 
     for (auto& seq : sortedPath)
         std::sort(seq.begin(), seq.end());
+
+    if (toReverse)
+        reverseSort(&sortedPath);
+
+    if (toMirror)
+        mirror(&sortedPath);
 
     for (unsigned int i = 0; i < path.size(); ++i)
         for (unsigned int j = 0; j < path[i].size(); ++j)
@@ -223,6 +238,32 @@ void Sorter::mergeIntoOne(std::vector<std::vector<Point>>* path)
     }
 }
 
+void Sorter::reverseSort(std::vector<std::vector<Point>>* path)
+{
+    for (std::vector<Point> &seq : (*path))
+        std::reverse(seq.begin(), seq.end());
+}
+
+void Sorter::mirror(std::vector<std::vector<Point>>* path)
+{
+    for (std::vector<Point> &seq : (*path))
+    {
+        std::deque<Point> mirrored{};
+
+        for (int i = seq.size() - 1; i >= 0; --i)
+        {
+            if (i % 2 == 0)
+                mirrored.push_back(seq[i]);
+            else
+                mirrored.push_front(seq[i]);
+
+            seq.erase(seq.begin() + i);
+        }
+
+        seq.assign(mirrored.begin(), mirrored.end());
+    }
+}
+
 std::vector<std::vector<Point>> Sorter::applyIntervals(std::vector<std::vector<Point>>* path, int maxIntervals, bool randomize)
 {
     std::vector<std::vector<Point>> out{};
@@ -234,7 +275,7 @@ std::vector<std::vector<Point>> Sorter::applyIntervals(std::vector<std::vector<P
     {
         int start = 0;
 
-        while (start < seq.size())
+        while (start < static_cast<int>(seq.size()))
         {
             int size;
 
@@ -245,7 +286,7 @@ std::vector<std::vector<Point>> Sorter::applyIntervals(std::vector<std::vector<P
 
             std::vector<Point> segment;
 
-            if (start + size < seq.size())
+            if (start + size < static_cast<int>(seq.size()))
                 segment = {seq.begin() + start, seq.begin() + start + size};
             else
                 segment = {seq.begin() + start, seq.end()};

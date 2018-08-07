@@ -3,11 +3,11 @@
 #define SORTER_H
 #include <SFML/Graphics.hpp>
 #include <vector>
+#include <deque>
 #include <algorithm>
 #include <iterator>
 #include <string>
-#include <iostream>
-#include <stdlib.h>
+#include <cstdlib>
 #include <cmath>
 
 struct Point
@@ -38,7 +38,7 @@ class Sorter
 public:
     Sorter(sf::Image* img);
     virtual ~Sorter();
-    sf::Image sort(std::string pathType, std::string funcType, int maxIntervals, bool randomizeIntervals, int angle, bool toMerge);
+    sf::Image sort(char *argv[]);
 
 private:
     unsigned int width;
@@ -53,6 +53,8 @@ private:
 
     std::vector<std::vector<Point>> applyIntervals(std::vector<std::vector<Point>>* path, int maxIntervals, bool randomize);
     void mergeIntoOne(std::vector<std::vector<Point>>* path);
+    void mirror(std::vector<std::vector<Point>>* path);
+    void reverseSort(std::vector<std::vector<Point>>* path);
 };
 
 #endif // SORTER_H
