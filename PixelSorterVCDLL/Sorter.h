@@ -49,7 +49,6 @@ private:
     unsigned int width;
     unsigned int height;
     sf::Image* image;
-    sf::Image sortedImage;
 
     std::vector<std::vector<Point>> rows();
     std::vector<std::vector<Point>> columns();

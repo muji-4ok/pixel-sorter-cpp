@@ -10,9 +10,6 @@ Sorter::Sorter(sf::Image* img)
     sf::Vector2u imageSize = image->getSize();
     width = imageSize.x;
     height = imageSize.y;
-    sortedImage = {};
-    sortedImage.create(width, height);
-    sortedImage.copy(*img, 0, 0);
     Point::image = img;
 }
 
@@ -61,6 +58,10 @@ sf::Image Sorter::sort(const char *pathType, int maxIntervals, bool randomizeInt
 
     if (toMirror)
         mirror(&sortedPath);
+
+    sf::Image sortedImage = {};
+    sortedImage.create(width, height);
+    sortedImage.copy(*image, 0, 0);
 
     #pragma omp parallel for
     for (int i = 0; i < path.size(); ++i)
