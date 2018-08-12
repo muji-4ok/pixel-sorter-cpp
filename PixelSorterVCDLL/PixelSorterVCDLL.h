@@ -20,13 +20,6 @@ extern "C" PIXELSORTERVCDLL_API const unsigned char *sortImage(unsigned int widt
 #ifdef __cplusplus
 extern "C" {
     #endif
-    /*
-    * Class:     pixelsorter_SortLib
-    * Method:    multiplyBy5
-    * Signature: (I)I
-    */
-    JNIEXPORT jint JNICALL Java_pixelsorter_SortLib_multiplyBy5
-    (JNIEnv *, jobject, jint);
 
     /*
     * Class:     pixelsorter_SortLib
