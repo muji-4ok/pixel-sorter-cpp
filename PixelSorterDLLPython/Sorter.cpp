@@ -3,6 +3,115 @@
 
 
 sf::Image *Point::image = nullptr;
+FuncType Point::funcType = FuncType::LIGHTNESS;
+
+Point::Point(unsigned short int i, unsigned short int j) : i(i), j(j) {};
+
+
+unsigned short Point::getMin(const sf::Color& color) const
+{
+    if (color.r <= color.g && color.r <= color.b)
+        return color.r;
+    else if (color.g <= color.r && color.g <= color.b)
+        return color.g;
+    else
+        return color.b;
+}
+
+unsigned short Point::getMax(const sf::Color& color) const
+{
+    if (color.r >= color.g && color.r >= color.b)
+        return color.r;
+    else if (color.g >= color.r && color.g >= color.b)
+        return color.g;
+    else
+        return color.b;
+}
+
+float Point::getMinFloat(const float & r, const float & g, const float & b) const
+{
+    if (r <= g && r <= b)
+        return r;
+    else if (g <= r && g <= b)
+        return g;
+    else
+        return b;
+}
+
+float Point::getMaxFloat(const float & r, const float & g, const float & b) const
+{
+    if (r >= g && r >= b)
+        return r;
+    else if (g >= r && g >= b)
+        return g;
+    else
+        return b;
+}
+
+float Point::getSaturation(const sf::Color & color) const
+{
+    unsigned short minVal = getMin(color);
+    unsigned short maxVal = getMax(color);
+
+    return (maxVal == 0) ? 0.0f : (255.0f - static_cast<float>(minVal) / maxVal);
+}
+
+float Point::getHue(const sf::Color & color) const
+{
+    float r = color.r / 255.0f;
+    float g = color.g / 255.0f;
+    float b = color.b / 255.0f;
+    float minVal = getMinFloat(r, g, b);
+    float maxVal = getMaxFloat(r, g, b);
+    float diff = maxVal - minVal;
+
+    if (diff == 0)
+        return 0;
+
+    if (maxVal == r)
+    {
+        float top = g - b;
+
+        if (g >= b)
+            return 60.0f * top / diff;
+        else
+            return 60.0f * top / diff + 360;
+    }
+    else if (maxVal == g)
+    {
+        return 60.0f * (b - r) / diff + 120;
+    }
+    else
+    {
+        return 60.0f * (r - g) / diff + 240;
+    }
+}
+
+bool Point::operator< (const Point& other) const
+{
+    auto c1 = image->getPixel(j, i);
+    auto c2 = image->getPixel(other.j, other.i);
+
+    if (funcType == FuncType::LIGHTNESS)
+    {
+        unsigned short int lightness1 = c1.r + c1.g + c1.b;
+        unsigned short int lightness2 = c2.r + c2.g + c2.b;
+
+        return lightness1 < lightness2;
+    }
+    else if (funcType == FuncType::VALUE)
+    {
+        return getMax(c1) < getMax(c2);
+    }
+    else if (funcType == FuncType::SATURATION)
+    {
+        return getSaturation(c1) < getSaturation(c2);
+    }
+    else if (funcType == FuncType::HUE)
+    {
+        return getHue(c1) < getHue(c2);
+    }
+}
 
 Sorter::Sorter(sf::Image* img)
 {
@@ -15,17 +124,16 @@ Sorter::Sorter(sf::Image* img)
 
 sf::Image Sorter::sort(const char *pathType, int maxIntervals, bool randomizeIntervals,
                        int angle, bool toMerge, bool toReverse, bool toMirror,
-                       bool toInterval, int lowThreshold)
+                       bool toInterval, int lowThreshold, const char *funcType)
 {
-    //std::string pathType{ pathType };
-    //int maxIntervals{ std::stoi(argv[4]) };
-    //bool randomizeIntervals{ static_cast<bool>(std::stoi(argv[5])) };
-    //int angle{ std::stoi(argv[6]) };
-    //bool toMerge{ static_cast<bool>(std::stoi(argv[7])) };
-    //bool toReverse{ static_cast<bool>(std::stoi(argv[8])) };
-    //bool toMirror{ static_cast<bool>(std::stoi(argv[9])) };
-    //bool toInterval{ static_cast<bool>(std::stoi(argv[10])) };
-    //int lowThreshold{ std::stoi(argv[11]) };
+    if (std::string(funcType) == "lightness")
+        Point::funcType = FuncType::LIGHTNESS;
+    else if (std::string(funcType) == "value")
+        Point::funcType = FuncType::VALUE;
+    else if (std::string(funcType) == "saturation")
+        Point::funcType = FuncType::SATURATION;
+    else if (std::string(funcType) == "hue")
+        Point::funcType = FuncType::HUE;
 
     std::vector<std::vector<Point>> path;
     std::vector<std::vector<Point>> sortedPath;

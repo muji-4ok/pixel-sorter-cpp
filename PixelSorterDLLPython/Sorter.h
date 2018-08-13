@@ -14,27 +14,36 @@
 #include <cstdlib>
 #include <cmath>
 
+enum FuncType
+{
+    LIGHTNESS = 0,
+    VALUE = 1,
+    SATURATION = 2,
+    HUE
+};
+
 struct Point
 {
     unsigned short int i;
     unsigned short int j;
     static sf::Image *image;
+    static FuncType funcType;
 
-    Point(unsigned short int ii, unsigned short int jj)
-    {
-        i = ii;
-        j = jj;
-    }
+    Point(unsigned short int i, unsigned short int j);
 
-    bool operator< (const Point& other) const
-    {
-        auto c1 = image->getPixel(j, i);
-        auto c2 = image->getPixel(other.j, other.i);
-        unsigned short int lightness1 = c1.r + c1.g + c1.b;
-        unsigned short int lightness2 = c2.r + c2.g + c2.b;
+    unsigned short getMin(const sf::Color& color) const;
 
-        return lightness1 < lightness2;
-    }
+    unsigned short getMax(const sf::Color& color) const;
+
+    float getMinFloat(const float& r, const float& g, const float& b) const;
+
+    float getMaxFloat(const float& r, const float& g, const float& b) const;
+
+    float getSaturation(const sf::Color& color) const;
+
+    float getHue(const sf::Color& color) const;
+
+    bool operator< (const Point& other) const;
 };
 
 class Sorter
@@ -43,7 +52,7 @@ public:
     Sorter(sf::Image* img);
     sf::Image sort(const char *pathType, int maxIntervals, bool randomizeIntervals,
                    int angle, bool toMerge, bool toReverse, bool toMirror,
-                   bool toInterval, int lowThreshold);
+                   bool toInterval, int lowThreshold, const char *funcType);
 
 private:
     unsigned int width;
